@@ -1,0 +1,241 @@
+{
+    "event": {
+        "eventType": "Reoptimize"
+    },
+    "state": {
+        "currentTimeSeconds": 0,
+        "cars": [
+            {
+                "id": 1,
+                "name": "A",
+                "canLoadPhase1": 1,
+                "canLoadPhase2": 0,
+                "canLoadPhase3": 0,
+                "timestampArrival": 0,
+                "carType": "BEV",
+                "maxCapacity": 1000,
+                "minLoadingState": 0,
+                "startCapacity": 900,
+                "minCurrent": 6,
+                "minCurrentPerPhase": 6,
+                "maxCurrent": 32,
+                "maxCurrentPerPhase": 32,
+                "suspendable": true,
+                "immediateStart": false,
+                "canUseVariablePower": true
+            },
+            {
+                "id": 2,
+                "name": "C",
+                "canLoadPhase1": 1,
+                "canLoadPhase2": 0,
+                "canLoadPhase3": 0,
+                "timestampArrival": 0,
+                "carType": "BEV",
+                "maxCapacity": 1000,
+                "minLoadingState": 0,
+                "startCapacity": 700,
+                "minCurrent": 6,
+                "minCurrentPerPhase": 6,
+                "maxCurrent": 32,
+                "maxCurrentPerPhase": 32,
+                "suspendable": true,
+                "immediateStart": false,
+                "canUseVariablePower": true
+            },
+            {
+                "id": 3,
+                "name": "B",
+                "canLoadPhase1": 1,
+                "canLoadPhase2": 0,
+                "canLoadPhase3": 0,
+                "timestampArrival": 0,
+                "carType": "BEV",
+                "maxCapacity": 1000,
+                "minLoadingState": 0,
+                "startCapacity": 500,
+                "minCurrent": 6,
+                "minCurrentPerPhase": 6,
+                "maxCurrent": 32,
+                "maxCurrentPerPhase": 32,
+                "suspendable": true,
+                "immediateStart": false,
+                "canUseVariablePower": true
+            },
+            {
+                "id": 4,
+                "name": "D",
+                "canLoadPhase1": 1,
+                "canLoadPhase2": 0,
+                "canLoadPhase3": 0,
+                "timestampArrival": 0,
+                "carType": "BEV",
+                "maxCapacity": 1000,
+                "minLoadingState": 0,
+                "startCapacity": 300,
+                "minCurrent": 6,
+                "minCurrentPerPhase": 6,
+                "maxCurrent": 32,
+                "maxCurrentPerPhase": 32,
+                "suspendable": true,
+                "immediateStart": false,
+                "canUseVariablePower": true
+            },
+            {
+                "id": 5,
+                "name": "E",
+                "canLoadPhase1": 1,
+                "canLoadPhase2": 0,
+                "canLoadPhase3": 0,
+                "timestampArrival": 0,
+                "carType": "BEV",
+                "maxCapacity": 1000,
+                "minLoadingState": 0,
+                "startCapacity": 100,
+                "minCurrent": 6,
+                "minCurrentPerPhase": 6,
+                "maxCurrent": 32,
+                "maxCurrentPerPhase": 32,
+                "suspendable": true,
+                "immediateStart": false,
+                "canUseVariablePower": true
+            }
+        ],
+        "fuseTree": {
+            "rootFuse": {
+                "@type": "Fuse",
+                "id": 0,
+                "fusePhase1": 26.08695652173913,
+                "fusePhase2": 26.08695652173913,
+                "fusePhase3": 26.08695652173913,
+                "phase1Connected": true,
+                "phase2Connected": true,
+                "phase3Connected": true,
+                "children": [
+                    {
+                        "@type": "ChargingStation",
+                        "id": 1,
+                        "fusePhase1": 32,
+                        "fusePhase2": 0,
+                        "fusePhase3": 0,
+                        "phase1Connected": true,
+                        "phase2Connected": false,
+                        "phase3Connected": false,
+                        "phaseToGrid": {
+                            "PHASE_1": "PHASE_1",
+                            "PHASE_2": "PHASE_2",
+                            "PHASE_3": "PHASE_3"
+                        },
+                        "phaseToChargingStation": {
+                            "PHASE_1": "PHASE_1",
+                            "PHASE_2": "PHASE_2",
+                            "PHASE_3": "PHASE_3"
+                        }
+                    },
+                    {
+                        "@type": "ChargingStation",
+                        "id": 2,
+                        "fusePhase1": 32,
+                        "fusePhase2": 0,
+                        "fusePhase3": 0,
+                        "phase1Connected": true,
+                        "phase2Connected": false,
+                        "phase3Connected": false,
+                        "phaseToGrid": {
+                            "PHASE_1": "PHASE_1",
+                            "PHASE_2": "PHASE_2",
+                            "PHASE_3": "PHASE_3"
+                        },
+                        "phaseToChargingStation": {
+                            "PHASE_1": "PHASE_1",
+                            "PHASE_2": "PHASE_2",
+                            "PHASE_3": "PHASE_3"
+                        }
+                    },
+                    {
+                        "@type": "ChargingStation",
+                        "id": 3,
+                        "fusePhase1": 32,
+                        "fusePhase2": 0,
+                        "fusePhase3": 0,
+                        "phase1Connected": true,
+                        "phase2Connected": false,
+                        "phase3Connected": false,
+                        "phaseToGrid": {
+                            "PHASE_1": "PHASE_1",
+                            "PHASE_2": "PHASE_2",
+                            "PHASE_3": "PHASE_3"
+                        },
+                        "phaseToChargingStation": {
+                            "PHASE_1": "PHASE_2",
+                            "PHASE_2": "PHASE_1",
+                            "PHASE_3": "PHASE_3"
+                        }
+                    },
+                    {
+                        "@type": "ChargingStation",
+                        "id": 4,
+                        "fusePhase1": 32,
+                        "fusePhase2": 0,
+                        "fusePhase3": 0,
+                        "phase1Connected": true,
+                        "phase2Connected": false,
+                        "phase3Connected": false,
+                        "phaseToGrid": {
+                            "PHASE_1": "PHASE_1",
+                            "PHASE_2": "PHASE_2",
+                            "PHASE_3": "PHASE_3"
+                        },
+                        "phaseToChargingStation": {
+                            "PHASE_1": "PHASE_2",
+                            "PHASE_2": "PHASE_1",
+                            "PHASE_3": "PHASE_3"
+                        }
+                    },
+                    {
+                        "@type": "ChargingStation",
+                        "id": 5,
+                        "fusePhase1": 32,
+                        "fusePhase2": 0,
+                        "fusePhase3": 0,
+                        "phase1Connected": true,
+                        "phase2Connected": false,
+                        "phase3Connected": false,
+                        "phaseToGrid": {
+                            "PHASE_1": "PHASE_1",
+                            "PHASE_2": "PHASE_2",
+                            "PHASE_3": "PHASE_3"
+                        },
+                        "phaseToChargingStation": {
+                            "PHASE_1": "PHASE_3",
+                            "PHASE_2": "PHASE_2",
+                            "PHASE_3": "PHASE_1"
+                        }
+                    }
+                ]
+            }
+        },
+        "carAssignments": [
+            {
+                "carID": 1,
+                "chargingStationID": 1
+            },
+            {
+                "carID": 2,
+                "chargingStationID": 2
+            },
+            {
+                "carID": 3,
+                "chargingStationID": 3
+            },
+            {
+                "carID": 4,
+                "chargingStationID": 4
+            },
+            {
+                "carID": 5,
+                "chargingStationID": 5
+            }
+        ]
+    }
+}

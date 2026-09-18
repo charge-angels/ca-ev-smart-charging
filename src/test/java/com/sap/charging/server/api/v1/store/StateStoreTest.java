@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,7 @@ import com.sap.charging.server.api.v1.exception.UnknownCarException;
 import com.sap.charging.server.api.v1.exception.UnknownChargingStationException;
 import com.sap.charging.sim.Simulation;
 import com.sap.charging.sim.common.SimulationUnitTest;
+import com.sap.charging.sim.eval.Validation;
 import com.sap.charging.util.FileIO;
 
 public class StateStoreTest extends SimulationUnitTest {
@@ -186,11 +188,73 @@ public class StateStoreTest extends SimulationUnitTest {
 		Car car1 = state.getCar(2); 
 		
 		for (int k=0; k<96; k++) {
-			assertEquals(8, car.getCurrentPlan()[k], 1e-8); 
-			assertEquals(8, car1.getCurrentPlan()[k], 1e-8); 
+			assertEquals(8, car.getCurrentPlan()[k], 1e-8);
+			assertEquals(8, car1.getCurrentPlan()[k], 1e-8);
 		}
 	}
-	
+
+	/**
+	 * Reproduces the Parking TCA Prosperi (Transdev) topology: a root fuse of 26.09A per phase
+	 * (18000W / 230V / 3 phases) with five single-phase 32A cars/stations spread over the three
+	 * grid phases so that TWO phases (L1 and L2) are over the fuse at the same time, and the
+	 * third (L3) is over it as well: A and C on L1, B and D on L2, E on L3.
+	 * <br>
+	 * Priorities are forced (via decreasing missingCapacity, i.e. increasing startCapacity) to
+	 * A &lt; C &lt; B &lt; D &lt; E (lowest priority first), so the resolver picks A first on the
+	 * worst phase (L1, tie-broken over L2 by FuseTreeException), then must pick B next even
+	 * though C (checked first, but drawing 0A on L2) is not the fix. Before the upstream fix
+	 * (bacf516), C would be dropped from the candidate list without being rescheduled, the list
+	 * would run out and StrategyAlgorithmic.handleViolation would throw
+	 * "Rescheduled all n=5 cars at k=0 but violation is not fixed!".
+	 */
+	@Test
+	public void test_OptimizeState_Prosperi_SinglePhaseCars_TwoPhasesOverFuse() throws JsonMappingException, JsonProcessingException {
+		State state = getStateFromJsonFile("src/test/resources/testCasesJSON/StateStoreTest_Prosperi_SinglePhaseCars_TwoPhasesOverFuse.json");
+
+		Simulation.verbosity = 0;
+		strategy.reactReoptimize(state);
+
+		final double fusePhaseLimit = 26.08695652173913; // 18000W / 230V / 3 phases
+		final double epsilon = 1e-6;
+
+		ChargingStation stationA = state.getChargingStation(1);
+		ChargingStation stationC = state.getChargingStation(2);
+		ChargingStation stationB = state.getChargingStation(3);
+		ChargingStation stationD = state.getChargingStation(4);
+		ChargingStation stationE = state.getChargingStation(5);
+
+		// The fuse must never be exceeded on any grid phase, at any timeslot
+		for (int k = 0; k < 96; k++) {
+			double[] fromA = Validation.getCurrentPerGridPhase(stationA, state, k);
+			double[] fromC = Validation.getCurrentPerGridPhase(stationC, state, k);
+			double[] fromB = Validation.getCurrentPerGridPhase(stationB, state, k);
+			double[] fromD = Validation.getCurrentPerGridPhase(stationD, state, k);
+			double[] fromE = Validation.getCurrentPerGridPhase(stationE, state, k);
+
+			double sumL1 = fromA[0] + fromC[0] + fromB[0] + fromD[0] + fromE[0];
+			double sumL2 = fromA[1] + fromC[1] + fromB[1] + fromD[1] + fromE[1];
+			double sumL3 = fromA[2] + fromC[2] + fromB[2] + fromD[2] + fromE[2];
+
+			assertTrue(sumL1 <= fusePhaseLimit + epsilon, "L1 over fuse at k=" + k + ": " + sumL1 + "A");
+			assertTrue(sumL2 <= fusePhaseLimit + epsilon, "L2 over fuse at k=" + k + ": " + sumL2 + "A");
+			assertTrue(sumL3 <= fusePhaseLimit + epsilon, "L3 over fuse at k=" + k + ": " + sumL3 + "A");
+		}
+
+		// At k=0: A and B are cut to 0A (lowest priority on the worst phase at each step),
+		// C, D and E are reduced to exactly the fuse limit (not to 0, not left at 32A)
+		Car carA = state.getCar(1);
+		Car carC = state.getCar(2);
+		Car carB = state.getCar(3);
+		Car carD = state.getCar(4);
+		Car carE = state.getCar(5);
+
+		assertEquals(0, carA.getCurrentPlan()[0], epsilon);
+		assertEquals(0, carB.getCurrentPlan()[0], epsilon);
+		assertEquals(fusePhaseLimit, carC.getCurrentPlan()[0], epsilon);
+		assertEquals(fusePhaseLimit, carD.getCurrentPlan()[0], epsilon);
+		assertEquals(fusePhaseLimit, carE.getCurrentPlan()[0], epsilon);
+	}
+
 	@Test
 	public void test_OptimizeState_ThreePhaseCar_SinglePhaseStation() throws JsonMappingException, JsonProcessingException {
 		State state = getStateFromJsonFile("src/test/resources/testCasesJSON/StateStoreTest_ThreePhaseCar_SinglePhaseStation.json");
