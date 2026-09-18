@@ -199,7 +199,7 @@ public class StateStoreTest extends SimulationUnitTest {
 	 * grid phases so that TWO phases (L1 and L2) are over the fuse at the same time, and the
 	 * third (L3) is over it as well: A and C on L1, B and D on L2, E on L3.
 	 * <br>
-	 * Priorities are forced (via decreasing missingCapacity, i.e. increasing startCapacity) to
+	 * Priorities are forced (via increasing missingCapacity, i.e. decreasing startCapacity) to
 	 * A &lt; C &lt; B &lt; D &lt; E (lowest priority first), so the resolver picks A first on the
 	 * worst phase (L1, tie-broken over L2 by FuseTreeException), then must pick B next even
 	 * though C (checked first, but drawing 0A on L2) is not the fix. Before the upstream fix
